@@ -13,16 +13,17 @@ public class Question {
 	private LocalDateTime dateHeureEnvoi;
 	private LocalDateTime dateHeureReponse;
 
+	private Verbe verbe;
+
 	public Question() {
 		super();
 		this.id = compteur++;
 		this.dateHeureEnvoi = LocalDateTime.now();
 	}
 
-	public Question(String reponsePreterit, String reponseParticipePasse) {
+	public Question(Verbe verbe) {
 		this();
-		this.reponsePreterit = reponsePreterit;
-		this.reponseParticipePasse = reponseParticipePasse;
+		this.verbe = verbe;
 	}
 
 	public String getReponsePreterit() {
@@ -61,9 +62,18 @@ public class Question {
 		return id;
 	}
 
+	public Verbe getVerbe() {
+		return verbe;
+	}
+
+	public void setVerbe(Verbe verbe) {
+		this.verbe = verbe;
+	}
+
 	@Override
 	public String toString() {
-		return "- Preterit : " + reponsePreterit + " Participe Passe : " + reponseParticipePasse;
+		return "- Base : " + getVerbe().getBaseVerbale() + "  Preterit : " + getVerbe().getPreterit()
+				+ " Participe Passe : " + getVerbe().getParticipePasse();
 	}
 
 }

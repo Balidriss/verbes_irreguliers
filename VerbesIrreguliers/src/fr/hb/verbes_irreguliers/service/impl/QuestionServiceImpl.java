@@ -34,15 +34,15 @@ public class QuestionServiceImpl implements QuestionService {
 		int currentId = getCurrentId();
 
 		Verbe currentVerbe = verbeService.getId(getIds().get(currentId));
-		question = new Question(currentVerbe.getPreterit(), currentVerbe.getParticipePasse());
+		question = new Question(currentVerbe);// , currentVerbe.getParticipePasse());
 		System.out.println("Question " + (currentId + 1) + ": Donnez le prétérit et le participe passé du verbe "
 				+ currentVerbe.getBaseVerbale() + " :");
 		String userInput = sc.nextLine();
 		String[] parts = userInput.split(",\\s*"); // regex pour espaces après la virgule
 
 		if (parts.length == 2) {
-			boolean correctPreterit = question.getReponsePreterit().equals("\"" + parts[0] + "\"");
-			boolean correctParticipePasse = question.getReponseParticipePasse().equals("\"" + parts[1] + "\"");
+			boolean correctPreterit = question.getVerbe().getPreterit().equals("\"" + parts[0] + "\"");
+			boolean correctParticipePasse = question.getVerbe().getPreterit().equals("\"" + parts[1] + "\"");
 
 			if (correctPreterit && correctParticipePasse) {
 				if (partieService.getPartie()
