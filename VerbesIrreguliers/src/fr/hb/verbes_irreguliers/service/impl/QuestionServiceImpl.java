@@ -1,31 +1,113 @@
 package fr.hb.verbes_irreguliers.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 import fr.hb.verbes_irreguliers.business.Question;
+import fr.hb.verbes_irreguliers.business.Verbe;
+import fr.hb.verbes_irreguliers.service.PartieService;
 import fr.hb.verbes_irreguliers.service.QuestionService;
+import fr.hb.verbes_irreguliers.service.VerbeService;
 
 public class QuestionServiceImpl implements QuestionService {
+	private QuestionService questionService;
+	private PartieService partieService;
+	private VerbeService verbeService;
+	private Scanner sc;
+	private List<Integer> ids;
+	private int currentId;
 
-	List<Question> questions;
-	
 	public QuestionServiceImpl() {
-		this.questions = createQuestions();
+
 	}
 
-
-	public List<Question> createQuestions() {
-	
-		return null;
+	public void shuffleIds() {
+		Collections.shuffle(getIds());
 	}
-
 
 	@Override
-	public List<Question> getQuestions() {
-		// TODO Auto-generated method stub
-		return null;
+	public void nextQuestion() {
+		Question question;
+		int currentId = getCurrentId();
+		Verbe currentVerbe = verbeService.getId(getIds().get(currentId));
+
+		String answerPreterit = currentVerbe.getPreterit();
+		String answerParticipePasse = currentVerbe.getParticipePasse();
+
+		System.out.println("Question " + (currentId + 1) + ": Donnez le prétérit et le participe passé du verbe "
+				+ currentVerbe.getBaseVerbale() + " :");
+		String userInput = sc.nextLine();
+		String[] parts = userInput.split(",\\s*"); // regex pour espaces après la virgule
+
+		question = new Question("N/A", "N/A");
+
+		if (parts.length == 2) {
+			question.setReponsePreterit("\"" + parts[0] + "\"");
+			question.setReponseParticipePasse("\"" + parts[1] + "\"");
+
+			boolean correctPreterit = question.getReponsePreterit().equals(answerPreterit);
+			boolean correctParticipePasse = question.getReponseParticipePasse().equals(answerParticipePasse);
+
+			if (correctPreterit && correctParticipePasse) {
+				System.out.println("Bravo ! Score : " + (partieService.getPartie().getScore() + 1) + "/"
+						+ (partieService.getPartie().getQuestions().size() + 1));
+				partieService.getPartie().setScore(partieService.getPartie().getScore() + 1);
+			} else {
+				System.out.println("Ce n’est pas la bonne réponse. Score : " + partieService.getPartie().getScore()
+						+ "/" + (partieService.getPartie().getQuestions().size() + 1));
+			}
+
+			partieService.getPartie().getQuestions().add(question);
+			setCurrentId(getCurrentId() + 1);
+		} else {
+			System.out.println("Suivez la consigne !");
+			System.out.println("Ce n’est pas la bonne réponse. Score : " + partieService.getPartie().getScore() + "/"
+					+ (partieService.getPartie().getQuestions().size() + 1));
+		}
+
 	}
 
-	
-	
+	@Override
+	public void setServices(VerbeService verbeService, PartieService partieService, Scanner sc) {
+		this.partieService = partieService;
+		this.verbeService = verbeService;
+		this.sc = sc;
+
+	}
+
+	public List<Integer> getIds() {
+		return ids;
+	}
+
+	public void setIds(List<Integer> ids) {
+		this.ids = ids;
+	}
+
+	public void generateRandomIds(int qty) {
+		setIds(new ArrayList<Integer>());
+		List<Integer> temp = new ArrayList<Integer>();
+
+		for (int i = 0; i < verbeService.getVerbes().size(); i++) {
+			temp.add(i);
+		}
+		Collections.shuffle(temp);
+		setIds(new ArrayList<Integer>(temp.subList(0, qty)));
+	}
+
+	public int getCurrentId() {
+		return currentId;
+	}
+
+	public void setCurrentId(int currentId) {
+		this.currentId = currentId;
+	}
+
+	@Override
+	public void prepareRandomIds() {
+		generateRandomIds(partieService.getPartie().getNbQuestionsSouhaitees());
+		setCurrentId(0);
+	}
+
 }

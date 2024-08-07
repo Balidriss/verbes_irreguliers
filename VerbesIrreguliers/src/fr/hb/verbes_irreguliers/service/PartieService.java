@@ -4,9 +4,20 @@ import java.util.Scanner;
 
 import fr.hb.verbes_irreguliers.business.Partie;
 
-public interface PartieService  {
+public interface PartieService {
 
-	public void start();
+	Partie getPartie();
 
-	
+	void askQtyQuestions();
+
+	void recap();
+
+	boolean askNew();
+
+	boolean hasNewPartie();
+
+	void askQuestions();
+
+	void setServices(VerbeService verbeService, QuestionService questionService, Scanner sc);
+
 }
