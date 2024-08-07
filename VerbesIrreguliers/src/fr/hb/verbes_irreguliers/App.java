@@ -27,13 +27,13 @@ public class App {
 
 			s("Nouvelle partie !");
 
+			partieService.newPartie();
 			partieService.askQtyQuestions();
 
 			s("Merci de séparer le prétérit et le participe passé avec une virgule");
 
 			partieService.askQuestions();
 
-			// resultat final // AVGdeltaTime // log display.
 			partieService.recap();
 
 		} while (partieService.askNew());

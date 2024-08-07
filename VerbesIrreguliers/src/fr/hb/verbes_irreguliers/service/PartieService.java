@@ -16,6 +16,8 @@ public interface PartieService {
 
 	boolean hasNewPartie();
 
+	void newPartie();
+
 	void askQuestions();
 
 	void setServices(VerbeService verbeService, QuestionService questionService, Scanner sc);

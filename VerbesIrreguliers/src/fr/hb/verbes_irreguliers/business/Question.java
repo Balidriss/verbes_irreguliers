@@ -16,6 +16,7 @@ public class Question {
 	public Question() {
 		super();
 		this.id = compteur++;
+		this.dateHeureEnvoi = LocalDateTime.now();
 	}
 
 	public Question(String reponsePreterit, String reponseParticipePasse) {
@@ -58,6 +59,11 @@ public class Question {
 
 	public long getId() {
 		return id;
+	}
+
+	@Override
+	public String toString() {
+		return "- Preterit : " + reponsePreterit + " Participe Passe : " + reponseParticipePasse;
 	}
 
 }

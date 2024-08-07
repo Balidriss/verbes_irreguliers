@@ -1,5 +1,6 @@
 package fr.hb.verbes_irreguliers.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,41 +32,58 @@ public class QuestionServiceImpl implements QuestionService {
 	public void nextQuestion() {
 		Question question;
 		int currentId = getCurrentId();
+
 		Verbe currentVerbe = verbeService.getId(getIds().get(currentId));
-
-		String answerPreterit = currentVerbe.getPreterit();
-		String answerParticipePasse = currentVerbe.getParticipePasse();
-
+		question = new Question(currentVerbe.getPreterit(), currentVerbe.getParticipePasse());
 		System.out.println("Question " + (currentId + 1) + ": Donnez le prétérit et le participe passé du verbe "
 				+ currentVerbe.getBaseVerbale() + " :");
 		String userInput = sc.nextLine();
 		String[] parts = userInput.split(",\\s*"); // regex pour espaces après la virgule
 
-		question = new Question("N/A", "N/A");
-
 		if (parts.length == 2) {
-			question.setReponsePreterit("\"" + parts[0] + "\"");
-			question.setReponseParticipePasse("\"" + parts[1] + "\"");
-
-			boolean correctPreterit = question.getReponsePreterit().equals(answerPreterit);
-			boolean correctParticipePasse = question.getReponseParticipePasse().equals(answerParticipePasse);
+			boolean correctPreterit = question.getReponsePreterit().equals("\"" + parts[0] + "\"");
+			boolean correctParticipePasse = question.getReponseParticipePasse().equals("\"" + parts[1] + "\"");
 
 			if (correctPreterit && correctParticipePasse) {
-				System.out.println("Bravo ! Score : " + (partieService.getPartie().getScore() + 1) + "/"
-						+ (partieService.getPartie().getQuestions().size() + 1));
-				partieService.getPartie().setScore(partieService.getPartie().getScore() + 1);
+				if (partieService.getPartie()
+						.getNbQuestionsSouhaitees() > partieService.getPartie().getQuestions().size() + 1) {
+					System.out.println("Bravo ! Score : " + (partieService.getPartie().getScore() + 1) + "/"
+							+ (partieService.getPartie().getQuestions().size() + 1));
+					partieService.getPartie().setScore(partieService.getPartie().getScore() + 1);
+				} else {
+					System.out.println("Bravo ! Score final : " + (partieService.getPartie().getScore() + 1) + "/"
+							+ (partieService.getPartie().getQuestions().size() + 1));
+					partieService.getPartie().setScore(partieService.getPartie().getScore() + 1);
+				}
+
 			} else {
-				System.out.println("Ce n’est pas la bonne réponse. Score : " + partieService.getPartie().getScore()
-						+ "/" + (partieService.getPartie().getQuestions().size() + 1));
+				if (partieService.getPartie()
+						.getNbQuestionsSouhaitees() > partieService.getPartie().getQuestions().size() + 1) {
+					System.out.println("Ce n’est pas la bonne réponse. Score : " + partieService.getPartie().getScore()
+							+ "/" + (partieService.getPartie().getQuestions().size() + 1));
+				} else {
+					System.out.println(
+							"Ce n’est pas la bonne réponse. Score final : " + partieService.getPartie().getScore() + "/"
+									+ (partieService.getPartie().getQuestions().size() + 1));
+				}
 			}
 
-			partieService.getPartie().getQuestions().add(question);
-			setCurrentId(getCurrentId() + 1);
 		} else {
+
 			System.out.println("Suivez la consigne !");
-			System.out.println("Ce n’est pas la bonne réponse. Score : " + partieService.getPartie().getScore() + "/"
-					+ (partieService.getPartie().getQuestions().size() + 1));
+			if (partieService.getPartie().getNbQuestionsSouhaitees() > partieService.getPartie().getQuestions().size()
+					+ 1) {
+				System.out.println("Ce n’est pas la bonne réponse. Score : " + partieService.getPartie().getScore()
+						+ "/" + (partieService.getPartie().getQuestions().size() + 1));
+			} else {
+				System.out
+						.println("Ce n’est pas la bonne réponse. Score final : " + partieService.getPartie().getScore()
+								+ "/" + (partieService.getPartie().getQuestions().size() + 1));
+			}
 		}
+		question.setDateHeureReponse(LocalDateTime.now());
+		partieService.getPartie().getQuestions().add(question);
+		setCurrentId(getCurrentId() + 1);
 
 	}
 
