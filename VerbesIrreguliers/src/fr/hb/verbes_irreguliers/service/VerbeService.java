@@ -7,9 +7,14 @@ import fr.hb.verbes_irreguliers.business.Verbe;
 
 public interface VerbeService {
 
-	public List<Verbe> getVerbes();
+	List<Verbe> getVerbes();
 
-	public void setServices(PartieService partieService, QuestionService questionService, Scanner sc);
+	void setServices(PartieService partieService, QuestionService questionService, Scanner sc);
 
-	public Verbe getId(int id);
+	void prepareRandomVerbes();
+
+	Verbe getRandomVerbe(int i);
+
+	boolean compareResponse(Verbe verbe, String userInputPreterit, String userInputParticipePasse);
+
 }
