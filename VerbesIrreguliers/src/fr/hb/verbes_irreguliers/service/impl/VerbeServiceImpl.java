@@ -3,8 +3,10 @@ package fr.hb.verbes_irreguliers.service.impl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import fr.hb.verbes_irreguliers.business.Verbe;
 import fr.hb.verbes_irreguliers.service.PartieService;
@@ -16,8 +18,9 @@ public class VerbeServiceImpl implements VerbeService {
 	private PartieService partieService;
 	private VerbeService verbeService;
 	private Scanner sc;
-	final String PATH = "src/resource/verbes.csv";
-	List<Verbe> verbes = createVerbes();
+	final String PATH = "verbes.csv";
+	List<Verbe> verbes;
+	List<Verbe> randomVerbes;
 
 	public VerbeServiceImpl() {
 		super();
@@ -53,9 +56,21 @@ public class VerbeServiceImpl implements VerbeService {
 		return verbs;
 	}
 
-	public void displayVerbes(List<Verbe> verbes) {
-		verbes.forEach(System.out::println);
+	@Override
+	public boolean compareResponse(Verbe verbe, String userInputPreterit, String userInputParticipePasse) {
 
+		boolean correctPreterit = verbe.getPreterit().equals("\"" + userInputPreterit + "\"");
+		boolean correctParticipePasse = verbe.getParticipePasse().equals("\"" + userInputParticipePasse + "\"");
+		return correctPreterit && correctParticipePasse;
+
+	}
+
+	public List<Verbe> getRandomVerbes() {
+		return randomVerbes;
+	}
+
+	public void setRandomVerbes(List<Verbe> randomVerbes) {
+		this.randomVerbes = randomVerbes;
 	}
 
 	@Override
@@ -72,9 +87,23 @@ public class VerbeServiceImpl implements VerbeService {
 	}
 
 	@Override
-	public Verbe getId(int id) {
+	public Verbe getRandomVerbe(int i) {
+		return getRandomVerbes().get(i);
+	}
 
-		return verbes.get(id);
+	public List<Verbe> getRandomVerbes(int qty) {
+
+		List<Verbe> shuffledVerbes = getVerbes();
+		Collections.shuffle(shuffledVerbes);
+
+		return shuffledVerbes.stream().limit(qty).collect(Collectors.toList());
+
+	}
+
+	@Override
+	public void prepareRandomVerbes() {
+		setRandomVerbes(getRandomVerbes(partieService.getPartie().getNbQuestionsSouhaitees()));
+
 	}
 
 }

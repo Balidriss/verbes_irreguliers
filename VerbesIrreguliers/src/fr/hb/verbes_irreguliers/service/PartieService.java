@@ -8,18 +8,10 @@ public interface PartieService {
 
 	Partie getPartie();
 
-	void askQtyQuestions();
-
-	void recap();
-
-	boolean askNew();
-
-	boolean hasNewPartie();
-
-	void newPartie();
-
-	void askQuestions();
+	void askQtyQuestions(int qty);
 
 	void setServices(VerbeService verbeService, QuestionService questionService, Scanner sc);
+
+	void newPartie();
 
 }

@@ -28,54 +28,14 @@ public class PartieServiceImpl implements PartieService {
 	}
 
 	@Override
-	public void askQtyQuestions() {
-		System.out.println("Combien de verbes pour cette partie ?");
-
+	public void askQtyQuestions(int qty) {
 		// TODO: VALIDATOR
-		getPartie().setNbQuestionsSouhaitees(sc.nextInt());
-		sc.nextLine();
-
-	}
-
-	@Override
-	public void recap() {
-
-		System.out.println("Temps moyen de réponse : " + calculateAverageTime(getPartie().getQuestions()).getSeconds()
-				+ " secondes.");
-
-		System.out.println("Historique des verbes demandés : ");
-		displayLogedQuestions();
+		getPartie().setNbQuestionsSouhaitees(qty);
 
 	}
 
 	private void displayLogedQuestions() {
-		getPartie().getQuestions().forEach(System.out::println);
 
-	}
-
-	@Override
-	public boolean askNew() {
-		System.out.println("Souhaitez-vous faire une nouvelle partie (o/n) ?");
-		String userInput = sc.nextLine();
-		return userInput.equals("o");
-
-	}
-
-	@Override
-	public boolean hasNewPartie() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	// question()/// boucle // resultat score/countScore
-	@Override
-	public void askQuestions() {
-		questionService.prepareRandomIds();
-		for (int i = 0; i < partie.getNbQuestionsSouhaitees(); i++) {
-
-			questionService.nextQuestion();
-		}
-		System.out.println("fin questions");
 	}
 
 	@Override
